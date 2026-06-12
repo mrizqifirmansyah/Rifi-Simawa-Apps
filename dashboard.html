@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard · Manajemen Data Mahasiswa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div id="toasts"></div>
+
+<!-- ===== TOP BAR ===== -->
+<header class="topbar">
+  <div class="brand"><span class="dot"></span><h1>DATA_MAHASISWA<span class="blink">_</span></h1></div>
+  <div class="who">
+    <span id="who-email">memuat…</span>
+    <button class="btn btn--danger" id="btn-logout">Logout</button>
+  </div>
+</header>
+
+<main class="shell">
+
+  <!-- ===== BENTO DASHBOARD ===== -->
+  <section class="bento" id="bento">
+    <div class="cell cell--total">
+      <h2>TOTAL MAHASISWA</h2>
+      <div class="bignum" id="stat-total">0<small>record terdaftar</small></div>
+    </div>
+
+    <div class="cell cell--ratio">
+      <h2>REGULER vs BEASISWA</h2>
+      <div class="bar">
+        <span class="seg-reg" id="seg-reg" style="width:50%"></span>
+        <span class="seg-bea" id="seg-bea" style="width:50%"></span>
+      </div>
+      <div class="ratio-legend">
+        <span><span class="swatch" style="background:repeating-linear-gradient(45deg,#000 0 4px,#fff 4px 8px)"></span><b id="lbl-reg">0%</b> Reguler (<span id="cnt-reg">0</span>)</span>
+        <span><span class="swatch" style="background:var(--green)"></span><b id="lbl-bea">0%</b> Beasiswa (<span id="cnt-bea">0</span>)</span>
+      </div>
+      <div class="ratio-legend" style="margin-top:10px">
+        <span><span class="swatch" style="background:var(--yellow)"></span>T. Informatika: <b id="cnt-ti">0</b></span>
+        <span><span class="swatch" style="background:var(--orange)"></span>Sistem Informasi: <b id="cnt-si">0</b></span>
+      </div>
+    </div>
+
+    <div class="cell cell--algo">
+      <h2 style="color:var(--green)">ALGORITMA AKTIF</h2>
+      <ul class="algo-list">
+        <li>Search <b id="active-search">Linear</b></li>
+        <li>Sort <b id="active-sort">Insertion</b></li>
+        <li>Key <b id="active-key">Nama</b></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== CONTROL PANEL ===== -->
+  <section class="panel">
+    <div class="panel-row">
+      <div class="panel-group search-group">
+        <span class="mono-label">Cari (Nama / NIM / Jurusan)</span>
+        <input id="search" type="search" placeholder="ketik untuk mencari…">
+      </div>
+      <div class="panel-group">
+        <span class="mono-label">Algoritma Pencarian</span>
+        <select id="search-algo">
+          <option value="linear">Linear Search</option>
+          <option value="sequential">Sequential Search</option>
+          <option value="binary">Binary Search</option>
+        </select>
+      </div>
+      <div class="panel-group">
+        <span class="mono-label">Algoritma Pengurutan</span>
+        <select id="sort-algo">
+          <option value="insertion">Insertion Sort</option>
+          <option value="selection">Selection Sort</option>
+          <option value="bubble">Bubble Sort</option>
+          <option value="merge">Merge Sort</option>
+          <option value="shell">Shell Sort</option>
+        </select>
+      </div>
+      <div class="panel-group">
+        <span class="mono-label">Urutkan Berdasarkan</span>
+        <select id="sort-by">
+          <option value="nama">Nama</option>
+          <option value="nim">NIM</option>
+          <option value="jurusan">Jurusan</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="panel-row" style="margin-top:14px">
+      <div class="actions">
+        <button class="btn btn--primary" id="btn-add">+ Tambah</button>
+        <button class="btn btn--ghost" id="btn-export-csv">Export CSV</button>
+        <button class="btn btn--ghost" id="btn-export-pdf">Export PDF</button>
+        <button class="btn btn--ghost" id="btn-import">Import JSON</button>
+        <input type="file" id="file-import" accept="application/json,.json" hidden>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DATA TABLE ===== -->
+  <div class="table-wrap">
+    <table class="data">
+      <thead>
+        <tr>
+          <th class="col-no">No</th>
+          <th>NIM</th><th>Nama</th><th>Email</th><th>Jurusan</th>
+          <th>Angkatan</th><th>Tipe</th><th class="col-aksi">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="rows">
+        <tr class="empty-row"><td colspan="8">Memuat data…</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="result-meta" id="result-meta"></p>
+
+  <!-- ===== FOOTER CHEAT SHEET ===== -->
+  <section class="cheat">
+    <h2>// CHEAT SHEET — TIME COMPLEXITY (BIG-O)</h2>
+    <div class="cheat-grid">
+      <table class="col-left">
+        <caption>SORTING</caption>
+        <tr><td>Insertion Sort</td><td>O(n) — O(n²)</td></tr>
+        <tr><td>Selection Sort</td><td>O(n²)</td></tr>
+        <tr><td>Bubble Sort</td><td>O(n) — O(n²)</td></tr>
+        <tr><td>Merge Sort</td><td>O(n log n)</td></tr>
+        <tr><td>Shell Sort</td><td>~O(n log² n)</td></tr>
+      </table>
+      <table>
+        <caption>SEARCHING</caption>
+        <tr><td>Linear Search</td><td>O(n)</td></tr>
+        <tr><td>Sequential Search</td><td>O(n)</td></tr>
+        <tr><td>Binary Search</td><td>O(log n)*</td></tr>
+        <tr><td colspan="2" style="opacity:.6;color:var(--white);font-size:.68rem">* perlu data terurut lebih dulu</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <p class="footnote">BACKEND: C++17 + CROW · FRONTEND: VANILLA JS + GSAP · UNPAM SISTEM INFORMASI</p>
+</main>
+
+<!-- ===== ADD / EDIT MODAL ===== -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <div class="modal-head">
+      <h2 id="modal-title">Tambah Mahasiswa</h2>
+      <span class="x" id="modal-close">×</span>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label class="mono-label" for="f-nim">NIM (8–15 digit)</label>
+        <input id="f-nim" inputmode="numeric" placeholder="241011450073">
+        <div class="hint" id="f-nim-hint"></div>
+      </div>
+      <div class="field">
+        <label class="mono-label" for="f-nama">Nama Lengkap</label>
+        <input id="f-nama" placeholder="Nama mahasiswa">
+      </div>
+      <div class="field">
+        <label class="mono-label" for="f-email">Email</label>
+        <input id="f-email" type="email" placeholder="nama@unpam.ac.id">
+        <div class="hint" id="f-email-hint"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label class="mono-label" for="f-jurusan">Jurusan</label>
+          <select id="f-jurusan">
+            <option>Teknik Informatika</option>
+            <option>Sistem Informasi</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="mono-label" for="f-angkatan">Angkatan</label>
+          <input id="f-angkatan" inputmode="numeric" placeholder="2024">
+        </div>
+      </div>
+      <div class="field">
+        <label class="mono-label" for="f-tipe">Tipe</label>
+        <select id="f-tipe">
+          <option>Reguler</option>
+          <option>Beasiswa</option>
+        </select>
+      </div>
+      <button class="btn btn--primary btn--block" id="btn-save">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="/js/dashboard.js"></script>
+</body>
+</html>
